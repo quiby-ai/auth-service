@@ -9,10 +9,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/clientpulse-org/auth-service/internal/config"
-	"github.com/clientpulse-org/auth-service/internal/handler"
-	"github.com/clientpulse-org/common/pkg/auth"
 	"github.com/gorilla/mux"
+	"github.com/quiby-ai/auth-service/internal/config"
+	"github.com/quiby-ai/auth-service/internal/handler"
+	"github.com/quiby-ai/common/pkg/auth"
 )
 
 func main() {

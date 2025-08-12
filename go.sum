@@ -1,8 +1,10 @@
-github.com/clientpulse-org/common v0.0.0-20250801182715-7884535fd726 h1:x7vjYsuai4erd0O/ajXoc5eofIqNqbq19ScG+oyyz5o=
-github.com/clientpulse-org/common v0.0.0-20250801182715-7884535fd726/go.mod h1:dA/IEdwoMMbeRrfrKF/7lNniUCve8bj0WW0RFgH4eO4=
 github.com/golang-jwt/jwt/v5 v5.2.0 h1:d/ix8ftRUorsN+5eMIlF4T6J8CAt9rch3My2winC1Jw=
 github.com/golang-jwt/jwt/v5 v5.2.0/go.mod h1:pqrtFR0X4osieyHYxtmOUWsAWrfe1Q5UVIyoH402zdk=
 github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
 github.com/gorilla/mux v1.8.1/go.mod h1:AKf9I4AEqPTmMytcMc0KkNouC66V3BtZ4qD5fmWSiMQ=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
+github.com/quiby-ai/common v0.0.0-20250811054312-eb41faa48e22 h1:1j+UpTFOx0MylcCMVQ00+wZYu6umRU9Vkokn/rhQQ20=
+github.com/quiby-ai/common v0.0.0-20250811054312-eb41faa48e22/go.mod h1:Ll+ONQkGFqKNJe2I+5aT2bFZA1KQf26fAgktfQbqb2w=
+github.com/telegram-mini-apps/init-data-golang v1.5.0 h1:rtpsmQ/nihkicPvnrdRXmHHtTnPvG1FmxMRZJwMKPz0=
+github.com/telegram-mini-apps/init-data-golang v1.5.0/go.mod h1:GG4HnRx9ocjD4MjjzOw7gf9Ptm0NvFbDr5xqnfFOYuY=
