@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/base64"
 	"fmt"
 	"log"
 	"os"
@@ -11,10 +12,17 @@ import (
 )
 
 type Config struct {
-	BotToken        string
-	JWTSecret       string
-	Port            string
+	ServerAddr      string
 	ShutdownTimeout time.Duration
+
+	PGDSN string
+
+	JWTIssuer    string
+	JWTAudience  string
+	JWTAccessTTL time.Duration
+	JWTSecret    []byte
+
+	TelegramBotToken string
 }
 
 func Load() (*Config, error) {
@@ -23,10 +31,21 @@ func Load() (*Config, error) {
 	}
 
 	config := &Config{
-		BotToken:        os.Getenv("BOT_TOKEN"),
-		JWTSecret:       os.Getenv("JWT_SECRET"),
-		Port:            getEnvWithDefault("PORT", "8081"),
-		ShutdownTimeout: getDurationWithDefault("SHUTDOWN_TIMEOUT_SECONDS", 30*time.Second),
+		ServerAddr:       getEnvWithDefault("SERVER_ADDR", ":8081"),
+		ShutdownTimeout:  getDurationWithDefault("SHUTDOWN_TIMEOUT_SECONDS", 30*time.Second),
+		PGDSN:            os.Getenv("PG_DSN"),
+		JWTIssuer:        getEnvWithDefault("JWT_ISSUER", "auth.quiby.ai"),
+		JWTAudience:      getEnvWithDefault("JWT_AUDIENCE", "api.quiby.ai"),
+		JWTAccessTTL:     getDurationWithDefault("JWT_ACCESS_TTL", 15*time.Minute),
+		TelegramBotToken: os.Getenv("TELEGRAM_BOT_TOKEN"),
+	}
+
+	if jwtSecretB64 := os.Getenv("JWT_SECRET_B64"); jwtSecretB64 != "" {
+		secret, err := base64.StdEncoding.DecodeString(jwtSecretB64)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JWT_SECRET_B64: %w", err)
+		}
+		config.JWTSecret = secret
 	}
 
 	if err := config.validate(); err != nil {
@@ -37,12 +56,16 @@ func Load() (*Config, error) {
 }
 
 func (c *Config) validate() error {
-	if c.BotToken == "" {
-		return fmt.Errorf("BOT_TOKEN environment variable is required")
+	if c.PGDSN == "" {
+		return fmt.Errorf("PG_DSN environment variable is required")
 	}
 
-	if c.JWTSecret == "" {
-		return fmt.Errorf("JWT_SECRET environment variable is required")
+	if len(c.JWTSecret) == 0 {
+		return fmt.Errorf("JWT_SECRET_B64 environment variable is required")
+	}
+
+	if c.TelegramBotToken == "" {
+		return fmt.Errorf("TELEGRAM_BOT_TOKEN environment variable is required")
 	}
 
 	return nil

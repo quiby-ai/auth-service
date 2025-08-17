@@ -7,11 +7,12 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 	"github.com/quiby-ai/auth-service/internal/config"
+	"github.com/quiby-ai/auth-service/internal/database"
 	"github.com/quiby-ai/auth-service/internal/handler"
+	"github.com/quiby-ai/auth-service/internal/models"
 	"github.com/quiby-ai/common/pkg/auth"
 )
 
@@ -21,18 +22,35 @@ func main() {
 		log.Fatal("Failed to load configuration:", err)
 	}
 
-	jwtConfig := auth.DefaultJWTConfig(cfg.JWTSecret)
+	db, err := database.NewPostgresConnection(context.Background(), cfg.PGDSN)
+	if err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+	defer database.ClosePostgresConnection(db)
 
-	r := mux.NewRouter()
+	userRepo := models.NewUserRepository(db)
 
-	r.HandleFunc("/healthz", handler.HealthHandler).Methods("GET")
+	jwtConfig := &auth.JWTConfig{
+		Issuer:    cfg.JWTIssuer,
+		Audience:  cfg.JWTAudience,
+		AccessTTL: cfg.JWTAccessTTL,
+		SecretKey: cfg.JWTSecret,
+	}
 
-	r.Handle("/", auth.TelegramAuthMiddleware(cfg.BotToken)(
-		handler.LoginWithTelegram(jwtConfig),
-	)).Methods("POST")
+	r := chi.NewRouter()
+
+	loginHandler := auth.TelegramAuthMiddleware(cfg.TelegramBotToken)(
+		handler.LoginWithTelegram(jwtConfig, userRepo),
+	)
+
+	meHandler := auth.RequireAuth(jwtConfig, handler.Me(userRepo))
+
+	r.Post("/", loginHandler.ServeHTTP)
+	r.Get("/me", meHandler.ServeHTTP)
+	r.Get("/healthz", handler.HealthHandler)
 
 	srv := &http.Server{
-		Addr:    ":" + cfg.Port,
+		Addr:    cfg.ServerAddr,
 		Handler: r,
 	}
 
@@ -47,7 +65,8 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("Shutting down…")
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+
+	ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatalf("shutdown error: %v", err)
