@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/quiby-ai/auth-service/internal/config"
 	"github.com/quiby-ai/auth-service/internal/database"
 	"github.com/quiby-ai/auth-service/internal/handler"
@@ -37,7 +36,7 @@ func main() {
 		SecretKey: cfg.JWTSecret,
 	}
 
-	r := chi.NewRouter()
+	r := http.NewServeMux()
 
 	loginHandler := auth.TelegramAuthMiddleware(cfg.TelegramBotToken)(
 		handler.LoginWithTelegram(jwtConfig, userRepo),
@@ -45,9 +44,9 @@ func main() {
 
 	meHandler := auth.RequireAuth(jwtConfig, handler.Me(userRepo))
 
-	r.Post("/", loginHandler.ServeHTTP)
-	r.Get("/me", meHandler.ServeHTTP)
-	r.Get("/healthz", handler.HealthHandler)
+	r.HandleFunc("POST /", loginHandler.ServeHTTP)
+	r.HandleFunc("GET /me", meHandler.ServeHTTP)
+	r.HandleFunc("GET /healthz", handler.HealthHandler)
 
 	srv := &http.Server{
 		Addr:    cfg.ServerAddr,

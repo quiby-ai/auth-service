@@ -3,7 +3,6 @@ module github.com/quiby-ai/auth-service
 go 1.24.1
 
 require (
-	github.com/go-chi/chi/v5 v5.2.2
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/joho/godotenv v1.5.1
 	github.com/quiby-ai/common v0.0.0-20250817035140-c8619afb3c13
