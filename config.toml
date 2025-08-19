@@ -1,0 +1,15 @@
+[server]
+addr = ":8081"
+shutdown_timeout_seconds = 30
+
+[jwt]
+issuer = "auth.quiby.ai"
+audience = "api.quiby.ai"
+access_ttl_minutes = 15
+# configured via JWT_SECRET environment variable
+
+[database]
+# configured via PG_DSN environment variable
+
+[telegram]
+# configured via TELEGRAM_BOT_TOKEN environment variable

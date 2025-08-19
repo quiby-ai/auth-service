@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/quiby-ai/auth-service/internal/config"
+	"github.com/quiby-ai/auth-service/config"
 	"github.com/quiby-ai/auth-service/internal/database"
 	"github.com/quiby-ai/auth-service/internal/handler"
 	"github.com/quiby-ai/auth-service/internal/models"
