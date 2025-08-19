@@ -4,8 +4,8 @@ go 1.24.1
 
 require (
 	github.com/jackc/pgx/v5 v5.7.5
-	github.com/joho/godotenv v1.5.1
-	github.com/quiby-ai/common v0.0.0-20250817035140-c8619afb3c13
+	github.com/quiby-ai/common v0.0.0-20250817103633-629bc2129a97
+	github.com/spf13/viper v1.20.1
 )
 
 require (
@@ -21,7 +21,6 @@ require (
 	github.com/spf13/afero v1.12.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
-	github.com/spf13/viper v1.20.1 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/telegram-mini-apps/init-data-golang v1.5.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
