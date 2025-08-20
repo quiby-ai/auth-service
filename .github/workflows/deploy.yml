@@ -19,11 +19,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
 
+      - name: Set environment variables
+        id: env
+        run: |
+          echo "PG_DSN=${{ secrets.PG_DSN }}" >> $GITHUB_ENV
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
+          echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> $GITHUB_ENV
+
       - name: Build & Push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
+          build-args: |
+            PG_DSN=${{ env.PG_DSN }}
+            JWT_SECRET=${{ env.JWT_SECRET }}
+            TELEGRAM_BOT_TOKEN=${{ env.TELEGRAM_BOT_TOKEN }}
           tags: |
             ghcr.io/quiby-ai/auth-service:${{ github.sha }}
             ghcr.io/quiby-ai/auth-service:main

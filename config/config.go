@@ -23,11 +23,6 @@ type Config struct {
 	TelegramBotToken string
 }
 
-// ResetViper resets Viper configuration (useful for testing)
-func ResetViper() {
-	viper.Reset()
-}
-
 func Load() (*Config, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("toml")
