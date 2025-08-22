@@ -37,7 +37,7 @@ func Load() (*Config, error) {
 	viper.BindEnv("jwt.access_ttl_minutes", "JWT_ACCESS_TTL")
 
 	viper.BindEnv("PG_DSN")
-	viper.BindEnv("JWT_SECRET_B64")
+	viper.BindEnv("JWT_SECRET")
 	viper.BindEnv("TELEGRAM_BOT_TOKEN")
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -58,24 +58,8 @@ func Load() (*Config, error) {
 		TelegramBotToken: viper.GetString("TELEGRAM_BOT_TOKEN"),
 	}
 
-	if config.ServerAddr == "" {
-		config.ServerAddr = ":8081"
-	}
-	if config.ShutdownTimeout == 0 {
-		config.ShutdownTimeout = 30 * time.Second
-	}
-	if config.JWTIssuer == "" {
-		config.JWTIssuer = "auth.quiby.ai"
-	}
-	if config.JWTAudience == "" {
-		config.JWTAudience = "api.quiby.ai"
-	}
-	if config.JWTAccessTTL == 0 {
-		config.JWTAccessTTL = 15 * time.Minute
-	}
-
-	if jwtSecretB64 := viper.GetString("JWT_SECRET"); jwtSecretB64 != "" {
-		secret, err := base64.StdEncoding.DecodeString(jwtSecretB64)
+	if jwtSecret := viper.GetString("JWT_SECRET"); jwtSecret != "" {
+		secret, err := base64.StdEncoding.DecodeString(jwtSecret)
 		if err != nil {
 			return nil, fmt.Errorf("invalid JWT_SECRET: %w", err)
 		}
